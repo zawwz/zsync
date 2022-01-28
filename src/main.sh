@@ -2,6 +2,8 @@
 
 set -e
 
+[ "$DEBUG" = true ] && set -x
+
 %include config.sh options.sh *.sh
 
 arg=$1

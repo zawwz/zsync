@@ -29,11 +29,23 @@ local_full_list() {
   find . -mindepth 1 ! -regex "^./$syncdir\$" ! -regex "^./$syncdir/.*" | sed 's|^./||g' | grep -vE "$ignores" | sort
 }
 
+local_file_list() {
+  find . -mindepth 1 ! -type d ! -regex "^./$syncdir\$" ! -regex "^./$syncdir/.*" | sed 's|^./||g' | grep -vE "$ignores" | sort
+}
+
 server_full_list() {
   ssh_exec '#LXSH_PARSE_MINIFY
     set -e
     cd "$1"
     find . -mindepth 1 ! -regex "^./$2\$" ! -regex "^./$2/.*" | sed "s|^./||g" | grep -vE "$3"
+  ' "$rdir" "$syncdir" "$ignores" | sort
+}
+
+server_file_list() {
+  ssh_exec '#LXSH_PARSE_MINIFY
+    set -e
+    cd "$1"
+    find . -mindepth 1 ! -type d ! -regex "^./$2\$" ! -regex "^./$2/.*" | sed "s|^./||g" | grep -vE "$3"
   ' "$rdir" "$syncdir" "$ignores" | sort
 }
 

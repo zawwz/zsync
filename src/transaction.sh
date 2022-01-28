@@ -70,10 +70,11 @@ delete_local() {
 forcepull()
 {
   local ret=0
+  get_ignores
   get_server  || return $?
   init_local  || return $?
   init_server || { unlock_local ; return $?; }
-  rsync $rsync_opts -r --delete -e ssh "$raddr:$rdir" "$(pwd)/." || ret=$?
+  server_file_list | rsync $rsync_opts --files-from=- --delete -e ssh "$raddr:$rdir" "$PWD/." || ret=$?
   unlock_all
   write_lists
   return $ret
@@ -82,10 +83,11 @@ forcepull()
 forcepush()
 {
   local ret=0
+  get_ignores
   get_server  || return $?
   init_local  || return $?
   init_server || { unlock_local ; return $?; }
-  rsync $rsync_opts -r --delete -e ssh "$(pwd)/." "$raddr:$rdir" || ret=$?
+  local_file_list | rsync $rsync_opts --files-from=- --delete -e ssh "$PWD/." "$raddr:$rdir" || ret=$?
   unlock_all
   write_lists
   return $ret

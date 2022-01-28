@@ -27,9 +27,11 @@ sync()
 
   local_full_list  > "$tdir/local_full"
   local_hash_list  > "$tdir/local_hash"
-  server_both_list | tee >(
-      head -z -n1  | tr -d '\0' | sort > "$tdir/server_full"
-  ) | tail -z -n1 | sort > "$tdir/server_hash"
+  server_hash_list > "$tdir/server_hash"
+  server_full_list > "$tdir/server_full"
+  #server_both_list | tee >(
+  #    head -z -n1  | tr -d '\0' | sort > "$tdir/server_full"
+  #) | tail -z -n1 | sort > "$tdir/server_hash"
 
   # get changed on both sides
   local_newer=$( list_diff "$tdir/local_hash"  "$@") || { rm -rf "$tdir" ; unlock_all ; return 1; }
